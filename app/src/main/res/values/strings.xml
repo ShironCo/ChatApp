@@ -1,3 +1,19 @@
 <resources>
-    <string name="app_name">ChatApps</string>
+    <string name="app_name">ShironChat</string>
+    <string name="welcome">Bienvenido a ShironChat</string>
+    <string name="instruction">Ingresa tu número de teléfono</string>
+    <string name="instructionVerify">Necesitamos verificar tu número</string>
+    <string name="selectCountry">Selecciona tu país</string>
+    <string name="titleDialogPhone">Ingresaste el número de teléfono:</string>
+    <string name="textDialogPhone">¿Este es el correcto, o te gustaría editar el número?</string>
+    <string name="edit">Editar</string>
+    <string name="continu">Continuar</string>
+    <string name="titleCode">Ingresa el código</string>
+    <string name="bodyCode">Ingresa el código de verificación enviado al teléfono</string>
+    <string name="nextButton">SIGUIENTE</string>
+    <string name="ContinueButton">CONTINUAR</string>
+    <string name="invaliPhone">Número invalido</string>
+    <string name="infoProfile">Información del perfil</string>
+    <string name="infoProfileDesc">Proporcione su nombre y una foto de perfil opcional.</string>
+    <string name="infoProfilePlaceholder">Escribe tú nombre aquí</string>
 </resources>
