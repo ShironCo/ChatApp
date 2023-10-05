@@ -1,7 +1,13 @@
 package com.example.chatapps.core.domain.preferences
 
 import android.content.Context
+import android.content.Context.VIBRATOR_MANAGER_SERVICE
+import android.content.Context.VIBRATOR_SERVICE
 import android.content.SharedPreferences
+import android.os.Build
+import android.os.VibratorManager
+import androidx.annotation.RequiresApi
+import androidx.core.content.getSystemService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -22,3 +28,4 @@ class PreferencesManager @Inject constructor(@ApplicationContext context: Contex
     }
 
 }
+
