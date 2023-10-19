@@ -5,11 +5,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.chatapps.components.createUser.presentation.createProfile.ProfileScreen
 import com.example.chatapps.navegation.AppNavigation
 import com.example.chatapps.ui.theme.ChatAppsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = MainViewModel()
-        installSplashScreen().setKeepOnScreenCondition{
+        installSplashScreen().setKeepOnScreenCondition {
             viewModel.splashLoading
         }
         viewModel.splash()
@@ -30,10 +34,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                AppNavigation()
+                    //AppNavigation()
+                    ProfileScreen()
                 }
             }
         }
     }
 }
+
 

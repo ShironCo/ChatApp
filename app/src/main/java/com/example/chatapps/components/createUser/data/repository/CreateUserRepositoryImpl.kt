@@ -7,13 +7,19 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.camera.core.CameraProvider
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.lifecycle.LifecycleOwner
 import com.example.chatapps.components.createUser.domain.repository.CreateUserRepository
 import javax.inject.Inject
 
 class CreateUserRepositoryImpl @Inject constructor(
     private val vibrator: Vibrator
 ) : CreateUserRepository {
-
     @RequiresApi(Build.VERSION_CODES.Q)
     override suspend fun vibrateShot() {
         val vibrationEffect : VibrationEffect =
@@ -26,5 +32,4 @@ class CreateUserRepositoryImpl @Inject constructor(
         vibrator.cancel()
         vibrator.vibrate(vibrationEffect)
     }
-
 }

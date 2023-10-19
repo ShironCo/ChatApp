@@ -1,9 +1,6 @@
 package com.example.chatapps.components.createUser.presentation
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
-
-data class CreateUserStates @OptIn(ExperimentalMaterialApi::class) constructor(
+data class CreateUserStates (
     val phone : String = "",
     val phoneError: Boolean = false,
     val dialogToggle: Boolean = false,
