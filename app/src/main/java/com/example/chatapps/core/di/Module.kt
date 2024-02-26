@@ -4,12 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.os.Vibrator
+import android.view.Surface
+import android.view.Surface.ROTATION_180
+import android.view.Surface.ROTATION_90
 import androidx.annotation.RequiresApi
-import androidx.camera.core.CameraProvider
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.Preview
+import androidx.camera.core.*
+import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import com.example.chatapps.components.createUser.data.repository.CreateUserRepositoryImpl

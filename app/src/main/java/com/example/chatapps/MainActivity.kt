@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import coil.imageLoader
 import com.example.chatapps.components.createUser.presentation.createProfile.ProfileScreen
 import com.example.chatapps.navegation.AppNavigation
 import com.example.chatapps.ui.theme.ChatAppsTheme
