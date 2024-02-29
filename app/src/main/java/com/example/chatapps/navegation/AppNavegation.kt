@@ -2,8 +2,6 @@ package com.example.chatapps.navegation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatapps.components.SplashScreen
 import com.example.chatapps.components.createUser.presentation.UserScreen
 import com.example.chatapps.components.createUser.presentation.createProfile.ProfileScreen
+import com.example.chatapps.components.createUser.presentation.mainChat.MainScreenChat
 import com.example.chatapps.components.createUser.presentation.selectCountry.SelectCountryApp
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -27,10 +26,13 @@ fun AppNavigation(){
             SelectCountryApp(navHostController)
         }
         composable(AppScreens.Profile.route){
-            ProfileScreen()
+            ProfileScreen(navHostController)
         }
         composable(AppScreens.Splash.route){
             SplashScreen(navHostController)
+        }
+        composable(AppScreens.MainChat.route){
+            MainScreenChat()
         }
     }
 }

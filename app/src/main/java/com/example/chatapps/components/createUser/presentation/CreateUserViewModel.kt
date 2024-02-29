@@ -17,6 +17,8 @@ import com.example.chatapps.components.createUser.domain.usecases.PhoneValidator
 import com.example.chatapps.navegation.AppScreens
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,7 +69,7 @@ class CreateUserViewModel @Inject constructor(
                 state = state.copy(
                     phoneError = !phoneValidator
                 )
-                if (phoneValidator){
+                if (phoneValidator) {
                     state = state.copy(
                         dialogToggle = !state.dialogToggle
                     )
@@ -175,24 +177,15 @@ class CreateUserViewModel @Inject constructor(
         auth.signInWithCredential(credential)
             .addOnCompleteListener(context as Activity) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    val user = task.result?.user
-                    println(credential)
-                    println(user)
-                    println("ENTRO")
-                   onEvent(CreateUserEvents.GoProfile(navHostController))
+                    onEvent(CreateUserEvents.GoProfile(navHostController))
                 } else {
                     // Sign in failed, display a message and update the UI
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         state = state.copy(
-                            code = ""
-                        )
-                        state = state.copy(
-                            ProgressToggle = false
-                        )
-                        state = state.copy(
+                            code = "",
+                            ProgressToggle = false,
                             codeError = true
                         )
                         onEvent(CreateUserEvents.VibratePhone)

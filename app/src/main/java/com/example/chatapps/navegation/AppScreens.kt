@@ -8,4 +8,5 @@ sealed class AppScreens(
     object SelectCountry : AppScreens("select_country")
     object Profile : AppScreens("profile")
     object Splash : AppScreens("splash_screen")
+    object MainChat : AppScreens("main_chat")
 }

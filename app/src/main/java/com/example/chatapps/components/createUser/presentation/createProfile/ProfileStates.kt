@@ -9,5 +9,6 @@ data class ProfileStates(
     val facing: Boolean = false,
     val previewPicture: Uri? = null,
     val pictureToggle: Boolean = false,
-    val image: Bitmap? = null
+    val image: Bitmap? = null,
+    val progressToggle: Boolean = false
     )

@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import coil.imageLoader
 import com.example.chatapps.components.createUser.presentation.createProfile.ProfileScreen
+import com.example.chatapps.components.createUser.presentation.mainChat.MainScreenChat
 import com.example.chatapps.navegation.AppNavigation
 import com.example.chatapps.ui.theme.ChatAppsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     //AppNavigation()
-                    ProfileScreen()
+                    MainScreenChat()
                 }
             }
         }

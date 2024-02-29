@@ -13,7 +13,6 @@ import androidx.camera.view.PreviewView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -30,15 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -47,30 +43,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import coil.imageLoader
-import coil.request.ImageRequest
 import com.example.chatapps.R
 import com.example.chatapps.components.createUser.data.repository.OptionsSheet
 import com.example.chatapps.components.createUser.data.repository.OptionsSheet.Companion.listBottom
-import com.example.chatapps.core.domain.preferences.Variable
+import com.example.chatapps.ui_common.CirculeProgress
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.io.File
 
 
 @Composable
-fun ProfileScreen() {
-    ProfileContent()
+fun ProfileScreen(navHostController: NavHostController) {
+    ProfileContent(navHostController)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProfileContent(
+    navHostController: NavHostController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -98,6 +93,10 @@ fun ProfileContent(
         viewModel.onEvent(ProfileEvents.Init(context))
     }
 
+    if (state.progressToggle){
+        CirculeProgress(text = stringResource(id = R.string.loading)) {}
+    }
+
     windows.window.statusBarColor = MaterialTheme.colors.background.toArgb()
     windows.window.navigationBarColor = MaterialTheme.colors.background.toArgb()
     BackHandler(
@@ -121,7 +120,7 @@ fun ProfileContent(
             }
         }
     ) {
-        ContentProfile(scope = scope, stateSheet = stateSheet, state = state) {
+        ContentProfile(scope = scope, stateSheet = stateSheet, state = state, navHost = navHostController) {
             viewModel.onEvent(it)
         }
     }
@@ -159,6 +158,7 @@ fun ContentProfile(
     scope: CoroutineScope,
     stateSheet: ModalBottomSheetState,
     state: ProfileStates,
+    navHost : NavHostController,
     onEvent: (ProfileEvents) -> Unit
 ) {
     val localFocus = LocalFocusManager.current
@@ -258,7 +258,7 @@ fun ContentProfile(
         ) {
             Button(
                 onClick = {
-
+                    onEvent(ProfileEvents.UpInfo(context, navHost))
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = MaterialTheme.colors.onSecondary,

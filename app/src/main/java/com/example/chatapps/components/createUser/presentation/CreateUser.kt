@@ -1,7 +1,5 @@
 package com.example.chatapps.components.createUser.presentation
 
-import android.content.Context
-import android.icu.text.ListFormatter.Width
 import android.os.*
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -42,13 +40,6 @@ import com.example.chatapps.R
 import com.example.chatapps.ui.theme.Roboto
 import com.example.chatapps.ui_common.CirculeProgress
 import kotlinx.coroutines.delay
-import android.os.VibratorManager
-import android.util.Log
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -101,7 +92,7 @@ fun UserContent(
         }
     }
     if (state.ProgressToggle) {
-        CirculeProgress(text = "Cargando") {}
+        CirculeProgress(text = stringResource(id = R.string.loading)) {}
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

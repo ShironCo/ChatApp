@@ -1,7 +1,11 @@
 package com.example.chatapps.components.createUser.presentation.createProfile
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -13,9 +17,17 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatapps.R
 import com.example.chatapps.components.createUser.domain.usecases.UriCopyToUri
 import com.example.chatapps.core.domain.preferences.Variable
 import com.example.chatapps.core.domain.repository.CoreRepository
+import com.example.chatapps.navegation.AppScreens
+import com.example.chatapps.ui_common.CirculeProgress
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.ktx.storageMetadata
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.*
@@ -27,6 +39,10 @@ class ProfileViewModel @Inject constructor(
     private val uriCopyToUri: UriCopyToUri,
 ) : ViewModel() {
 
+    private val fireStore = Firebase.firestore
+    private val storage = Firebase.storage
+    private val storageRef = storage.reference
+    private val user = Firebase.auth.currentUser
     var state by mutableStateOf(ProfileStates())
         private set
 
@@ -69,6 +85,7 @@ class ProfileViewModel @Inject constructor(
                                         pictureToggle = true
                                     )
                                 }
+
                                 override fun onError(exception: ImageCaptureException) {
                                     Toast.makeText(
                                         events.context,
@@ -123,7 +140,70 @@ class ProfileViewModel @Inject constructor(
                     )
                 }
             }
-            is ProfileEvents.UpdateInfo -> TODO()
+            is ProfileEvents.UpInfo -> {
+                viewModelScope.launch {
+                    if (state.name.isNotEmpty()) {
+                        state = state.copy(
+                            progressToggle = true
+                        )
+                        val riversRef = storageRef.child("images/photoProfile${user?.phoneNumber}")
+                        val directory = File(events.context.filesDir, Variable.Perfil.key)
+                        val archive = File(directory, Variable.FotoPerfil.key)
+                        if (archive.exists()) {
+                            riversRef.putFile(archive.toUri()).addOnSuccessListener {
+                                user?.phoneNumber.let { phoneNumber ->
+                                    val uID = user?.uid
+                                    if (phoneNumber != null) {
+                                        val users = hashMapOf(
+                                            "fotoPerfil" to riversRef.path,
+                                            "nombre" to state.name,
+                                            "numero" to phoneNumber
+                                        )
+                                        if (uID != null){
+                                            fireStore.collection("user").document(uID)
+                                                .set(users)
+                                                .addOnSuccessListener {
+                                                    Log.d("Creacion de usuario", "Usuario creado")
+                                                    events.navHostController.popBackStack()
+                                                    events.navHostController.navigate(AppScreens.MainChat.route)
+                                                }.addOnFailureListener { Er ->
+                                                    Log.d(
+                                                        "Creacion de usuario fallido",
+                                                        "Ha ocurrido un error $Er"
+                                                    )
+                                                }
+                                        }
+                                    }
+                                }
+                                Log.d("Advert", "Ubicacion de la imagen ${riversRef.path}")
+                                Log.d("Up", "Imagen correctamente subida")
+                            }.addOnFailureListener {
+                                Log.d("Down", "Ha ocurrido un problema $it")
+                            }
+                        } else {
+                            val bitmap = BitmapFactory.decodeResource(
+                                events.context.resources,
+                                R.drawable.profilephoto
+                            )
+                            val baos = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                            val data = baos.toByteArray()
+                            riversRef.putBytes(data).addOnSuccessListener {
+                                Log.d("Up", "Imagen correctamente subida")
+                            }.addOnFailureListener {
+                                Log.d("Down", "Ha ocurrido un problema $it")
+                            }
+                        }
+                    } else {
+                        Toast.makeText(
+                            events.context,
+                            "El nombre no puede quedar vacio",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                }
+            }
         }
     }
 
