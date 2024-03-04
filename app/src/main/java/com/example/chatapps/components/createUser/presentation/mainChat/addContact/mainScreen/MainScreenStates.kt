@@ -1,4 +1,4 @@
-package com.example.chatapps.components.createUser.presentation.mainChat
+package com.example.chatapps.components.createUser.presentation.mainChat.addContact.mainScreen
 
 data class MainScreenStates(
     val search: String? = null,

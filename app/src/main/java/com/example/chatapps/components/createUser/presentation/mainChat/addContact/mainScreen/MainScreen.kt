@@ -1,16 +1,10 @@
-package com.example.chatapps.components.createUser.presentation.mainChat
+package com.example.chatapps.components.createUser.presentation.mainChat.addContact.mainScreen
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.animation.*
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,31 +14,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.UiComposable
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusProperties
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalInputModeManager
-import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapps.R
+import com.example.chatapps.components.createUser.presentation.mainChat.addContact.AddContactScreen
 
 @Composable
 fun MainScreenChat(
     viewModel : MainScreenViewModel = hiltViewModel()
 ) {
     Scaffold(
-        topBar = {TopLayout(viewModel) },
+        topBar = { TopLayout(viewModel) },
         floatingActionButton = {
             Button(
                 shape = MaterialTheme.shapes.large.copy(
@@ -67,6 +54,9 @@ fun MainScreenChat(
         ContentMainScreenChat(
             modifier = Modifier.padding(it)
         )
+    }
+    AnimatedVisibility(visible = true) {
+        AddContactScreen()
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.chatapps.components.createUser.presentation.mainChat
+package com.example.chatapps.components.createUser.presentation.mainChat.addContact.mainScreen
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

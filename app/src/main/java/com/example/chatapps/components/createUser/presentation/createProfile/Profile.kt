@@ -51,6 +51,7 @@ import com.example.chatapps.R
 import com.example.chatapps.components.createUser.data.repository.OptionsSheet
 import com.example.chatapps.components.createUser.data.repository.OptionsSheet.Companion.listBottom
 import com.example.chatapps.ui_common.CirculeProgress
+import com.example.chatapps.ui_common.TextsFieldBasic
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.CoroutineScope
@@ -223,33 +224,9 @@ fun ContentProfile(
             }
         }
         Spacer(modifier = Modifier.height(25.dp))
-        OutlinedTextField(
-            value = state.name,
-            onValueChange = {
-                onEvent(ProfileEvents.SetName(it))
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(id = R.string.infoProfilePlaceholder),
-                    style = MaterialTheme.typography.body1.copy(
-                        fontSize = 16.sp
-                    ),
-                    color = MaterialTheme.colors.primary
-                )
-            },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.background,
-                backgroundColor = MaterialTheme.colors.background,
-                unfocusedBorderColor = MaterialTheme.colors.background,
-                textColor = MaterialTheme.colors.onPrimary
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = MaterialTheme.typography.body1,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                localFocus.clearFocus()
-            })
-        )
+        TextsFieldBasic(modifier = Modifier,
+            title = state.name, focus = localFocus, placeholder = stringResource(id = R.string.infoProfilePlaceholder),
+            onEvent = {onEvent(ProfileEvents.SetName(it))})
         Box(
             modifier = Modifier
                 .fillMaxSize()

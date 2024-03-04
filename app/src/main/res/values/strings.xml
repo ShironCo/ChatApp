@@ -10,8 +10,8 @@
     <string name="continu">Continuar</string>
     <string name="titleCode">Ingresa el código</string>
     <string name="bodyCode">Ingresa el código de verificación enviado al teléfono</string>
-    <string name="nextButton">SIGUIENTE</string>
-    <string name="continueButton">CONTINUAR</string>
+    <string name="nextButton">Siguiente</string>
+    <string name="continueButton">Continuar</string>
     <string name="invaliPhone">Número invalido</string>
     <string name="infoProfile">Información del perfil</string>
     <string name="infoProfileDesc">Proporcione su nombre y una foto de perfil opcional.</string>
@@ -22,4 +22,8 @@
     <string name="titleSheet">Foto de perfil</string>
     <string name="loading">Cargando</string>
     <string name="search">Buscar…</string>
+    <string name="newContact">Nuevo Contacto</string>
+    <string name="name">Nombre</string>
+    <string name="lastName">Apellido</string>
+    <string name="country">País</string>
 </resources>
