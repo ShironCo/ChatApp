@@ -1,5 +1,7 @@
-package com.example.chatapps.components.createUser.presentation.mainChat.addContact
+package com.example.chatapps.components.mainScreenChats.presentation.addContacts
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -47,7 +49,32 @@ class AddContactViewModel @Inject constructor(
                     telephone = events.telephone
                 )
             }
+            AddContactEvents.CleanVariables -> {
+                state = state.copy(
+                    code = null,
+                    flag = null,
+                    expanded = false,
+                    lastName = "",
+                    name = "",
+                    telephone = "",
+                    errorTxphone = false
+                )
+            }
+            AddContactEvents.AddContact -> {
+                if ((!validatePhone(state.telephone) || state.telephone.isEmpty())){
+                    state = state.copy(
+                        errorTxphone = true
+                    )
+                }else{
+                    Log.d(TAG, "USUARIO CREADO")
+                }
+            }
         }
+    }
+
+    private fun validatePhone(phone: String):Boolean{
+        val regex = Regex("""^\d{10}$""")
+        return phone.matches(regex)
     }
 
 }

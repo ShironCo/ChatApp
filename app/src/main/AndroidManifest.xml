@@ -25,6 +25,7 @@
             android:exported="true"
             android:theme="@style/Theme.SplashChatApps"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

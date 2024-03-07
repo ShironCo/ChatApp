@@ -167,7 +167,9 @@ fun ContentProfile(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 30.dp, vertical = 15.dp),
+            .padding(horizontal = 30.dp, vertical = 15.dp)
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -225,7 +227,10 @@ fun ContentProfile(
         }
         Spacer(modifier = Modifier.height(25.dp))
         TextsFieldBasic(modifier = Modifier,
-            title = state.name, focus = localFocus, placeholder = stringResource(id = R.string.infoProfilePlaceholder),
+            title = state.name, onFocus = { localFocus.clearFocus() }, placeholder = stringResource(id = R.string.infoProfilePlaceholder),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
             onEvent = {onEvent(ProfileEvents.SetName(it))})
         Box(
             modifier = Modifier
@@ -260,8 +265,8 @@ fun ModalBottomSheetBody(
     bottomClick: (Int) -> Unit,
     content: @Composable () -> Unit
 ) {
-
     ModalBottomSheetLayout(
+        modifier = Modifier.navigationBarsPadding(),
         sheetContent = {
             Column(
                 modifier = Modifier.padding(top = 30.dp, start = 20.dp)

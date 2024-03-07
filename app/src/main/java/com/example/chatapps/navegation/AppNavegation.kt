@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatapps.components.SplashScreen
 import com.example.chatapps.components.createUser.presentation.UserScreen
 import com.example.chatapps.components.createUser.presentation.createProfile.ProfileScreen
-import com.example.chatapps.components.createUser.presentation.mainChat.addContact.mainScreen.MainScreenChat
+import com.example.chatapps.components.mainScreenChats.presentation.mainScreens.MainScreenChat
 import com.example.chatapps.components.createUser.presentation.selectCountry.SelectCountryApp
 
 @RequiresApi(Build.VERSION_CODES.S)

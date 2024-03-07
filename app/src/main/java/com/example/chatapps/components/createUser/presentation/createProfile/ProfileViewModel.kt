@@ -166,6 +166,7 @@ class ProfileViewModel @Inject constructor(
                                                     Log.d("Creacion de usuario", "Usuario creado")
                                                     events.navHostController.popBackStack()
                                                     events.navHostController.navigate(AppScreens.MainChat.route)
+                                                    fireStore.terminate()
                                                 }.addOnFailureListener { Er ->
                                                     Log.d(
                                                         "Creacion de usuario fallido",

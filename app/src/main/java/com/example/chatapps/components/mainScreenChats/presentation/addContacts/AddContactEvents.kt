@@ -1,4 +1,4 @@
-package com.example.chatapps.components.createUser.presentation.mainChat.addContact
+package com.example.chatapps.components.mainScreenChats.presentation.addContacts
 
 sealed interface AddContactEvents{
 
@@ -8,5 +8,8 @@ sealed interface AddContactEvents{
     data class ChangeLastName(val lastName:String): AddContactEvents
     data class ChangeTelephone(val telephone:String): AddContactEvents
     data class ChangeExpanded(val expanded: Boolean): AddContactEvents
+    object CleanVariables: AddContactEvents
+    object AddContact: AddContactEvents
+
 
 }

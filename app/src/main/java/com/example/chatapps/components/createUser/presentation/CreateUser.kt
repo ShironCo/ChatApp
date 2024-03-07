@@ -94,42 +94,47 @@ fun UserContent(
     if (state.ProgressToggle) {
         CirculeProgress(text = stringResource(id = R.string.loading)) {}
     }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(vertical = 30.dp)
+    Surface(
+        modifier = Modifier.statusBarsPadding().navigationBarsPadding(),
+        color = MaterialTheme.colors.background
     ) {
-        TextInformation()
-        Spacer(modifier = Modifier.height(40.dp))
-        ButtonSelectCountry(flag) {
-            viewModel.onEvent(CreateUserEvents.NavSelectCountry(navHostController))
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        TextFieldNumber(
-            state, code
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(vertical = 30.dp)
         ) {
-            viewModel.onEvent(it)
-        }
-
-        if (state.phoneError) {
-            Box {
-                Text(
-                    text = stringResource(id = R.string.invaliPhone),
-                    style = MaterialTheme.typography.body1.copy(
-                        fontSize = 16.sp
-                    ),
-                    color = MaterialTheme.colors.onPrimary,
-                )
+            TextInformation()
+            Spacer(modifier = Modifier.height(40.dp))
+            ButtonSelectCountry(flag) {
+                viewModel.onEvent(CreateUserEvents.NavSelectCountry(navHostController))
             }
-        }
-        LottieAnimation(
-            modifier = Modifier.size(270.dp),
-            composition = startAnimation,
-            reverseOnRepeat = true,
-            iterations = LottieConstants.IterateForever
-        )
+            Spacer(modifier = Modifier.height(20.dp))
+            TextFieldNumber(
+                state, code
+            ) {
+                viewModel.onEvent(it)
+            }
 
-        ButtonScreenMain(R.string.nextButton, state) {
-            viewModel.onEvent(CreateUserEvents.ValidatePhone)
+            if (state.phoneError) {
+                Box {
+                    Text(
+                        text = stringResource(id = R.string.invaliPhone),
+                        style = MaterialTheme.typography.body1.copy(
+                            fontSize = 16.sp
+                        ),
+                        color = MaterialTheme.colors.onPrimary,
+                    )
+                }
+            }
+            LottieAnimation(
+                modifier = Modifier.size(270.dp),
+                composition = startAnimation,
+                reverseOnRepeat = true,
+                iterations = LottieConstants.IterateForever
+            )
+
+            ButtonScreenMain(R.string.nextButton, state) {
+                viewModel.onEvent(CreateUserEvents.ValidatePhone)
+            }
         }
     }
     AnimatedVisibility(
@@ -247,7 +252,7 @@ fun TextFieldNumber(
     onEvent: (CreateUserEvents) -> Unit
 ) {
     val focus = LocalFocusManager.current
-    LaunchedEffect(key1 = states.phone){
+    LaunchedEffect(key1 = states.phone) {
         if (states.phone.length == 10 && !states.sendCodeToggle) {
             focus.clearFocus()
         }
@@ -472,15 +477,16 @@ fun SendSms(
                                 color = Color.White,
                             )
                             Spacer(modifier = Modifier.width(10.dp))
-                            TextButton(onClick = {
-                                onEvent(CreateUserEvents.ProgressToggle)
-                                onEvent(
-                                    CreateUserEvents.VerifyPhone(
-                                        context,
-                                        phone.replace("\\s".toRegex(), "")
+                            TextButton(
+                                onClick = {
+                                    onEvent(CreateUserEvents.ProgressToggle)
+                                    onEvent(
+                                        CreateUserEvents.VerifyPhone(
+                                            context,
+                                            phone.replace("\\s".toRegex(), "")
+                                        )
                                     )
-                                )
-                            },
+                                },
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = Color.Transparent,
                                     contentColor = MaterialTheme.colors.onSecondary

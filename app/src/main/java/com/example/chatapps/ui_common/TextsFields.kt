@@ -16,10 +16,13 @@ import com.example.chatapps.components.createUser.presentation.createProfile.Pro
 
 @Composable
 fun TextsFieldBasic(
-    modifier : Modifier,
+    modifier : Modifier = Modifier,
     title : String,
-    placeholder: String,
-    focus : FocusManager,
+    placeholder: String? = null,
+    keyboardOptions: KeyboardOptions,
+    onFocus : () -> Unit,
+    label : @Composable (() -> Unit)? = null,
+    isError : Boolean = false,
     onEvent: (String) -> Unit
 ) {
     TextField(
@@ -28,25 +31,29 @@ fun TextsFieldBasic(
             onEvent(it)
         },
         placeholder = {
-            Text(
-                text = placeholder,
-                style = MaterialTheme.typography.body1.copy(
-                    fontSize = 18.sp
-                ),
-                color = MaterialTheme.colors.secondary
-            )
+            if (placeholder != null) {
+                Text(
+                    text = placeholder,
+                    style = MaterialTheme.typography.body1.copy(
+                        fontSize = 18.sp
+                    ),
+                    color = MaterialTheme.colors.primary
+                )
+            }
         },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colors.secondary,
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = MaterialTheme.colors.primary,
             backgroundColor = MaterialTheme.colors.background,
-            unfocusedBorderColor = MaterialTheme.colors.secondary,
+            unfocusedIndicatorColor = MaterialTheme.colors.primary,
             textColor = MaterialTheme.colors.onPrimary
         ),
+        label = label,
+        isError = isError,
         modifier = modifier.fillMaxWidth(),
         textStyle = MaterialTheme.typography.body1,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardOptions = keyboardOptions,
         keyboardActions = KeyboardActions(onDone = {
-            focus.clearFocus()
+           onFocus()
         })
     )
 }

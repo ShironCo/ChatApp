@@ -1,10 +1,18 @@
-package com.example.chatapps.components.createUser.presentation.mainChat.addContact.mainScreen
+package com.example.chatapps.components.mainScreenChats.presentation.mainScreens
 
+
+import android.content.ContentValues.TAG
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,36 +26,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapps.R
-import com.example.chatapps.components.createUser.presentation.mainChat.addContact.AddContactScreen
+import com.example.chatapps.components.mainScreenChats.presentation.addContacts.AddContactEvents
+import com.example.chatapps.components.mainScreenChats.presentation.addContacts.AddContactScreen
+import com.example.chatapps.components.mainScreenChats.presentation.addContacts.AddContactViewModel
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Composable
 fun MainScreenChat(
-    viewModel : MainScreenViewModel = hiltViewModel()
+    viewModel: MainScreenViewModel = hiltViewModel(),
+    viewModelContact: AddContactViewModel = hiltViewModel()
 ) {
+    val state = viewModel.states
+
+    BackHandler(true) {
+        if (state.toggleContact) {
+            viewModelContact.onEvent(AddContactEvents.CleanVariables)
+            viewModel.onEvent(MainScreenEvents.ChangeToggleContact(false))
+        }
+    }
     Scaffold(
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         topBar = { TopLayout(viewModel) },
         floatingActionButton = {
-            Button(
-                shape = MaterialTheme.shapes.large.copy(
-                    CornerSize(100)
-                ),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.onSecondary
-                ),
-                onClick = { /*TODO*/ }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PersonAdd,
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.background,
-                    modifier = Modifier.size(30.dp)
-                )
+            FloatingButtonMainScreen() {
+                viewModel.onEvent(it)
             }
         }
     ) {
@@ -55,8 +68,50 @@ fun MainScreenChat(
             modifier = Modifier.padding(it)
         )
     }
-    AnimatedVisibility(visible = true) {
-        AddContactScreen()
+    AnimatedVisibility(
+        visible = state.toggleContact,
+        enter = slideInHorizontally(
+            animationSpec = tween(
+                durationMillis = 500,
+                easing = EaseIn
+            ),
+            initialOffsetX = { it * 2 }
+        ),
+        exit = slideOutHorizontally(
+            animationSpec = tween(
+                durationMillis = 500,
+                easing = EaseOut
+            ),
+            targetOffsetX = { it * 2 }
+        )
+    ) {
+        AddContactScreen() {
+            viewModel.onEvent(it)
+        }
+    }
+}
+
+@Composable
+fun FloatingButtonMainScreen(
+    onEvent: (MainScreenEvents) -> Unit
+) {
+    Button(
+        shape = MaterialTheme.shapes.large.copy(
+            CornerSize(100)
+        ),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.onSecondary
+        ),
+        onClick = {
+            onEvent(MainScreenEvents.ChangeToggleContact(toggleContact = true))
+        }
+    ) {
+        Icon(
+            imageVector = Icons.Default.PersonAdd,
+            contentDescription = null,
+            tint = MaterialTheme.colors.background,
+            modifier = Modifier.size(30.dp)
+        )
     }
 }
 
@@ -101,11 +156,8 @@ fun TopLayout(
             Row() {
                 IconButton(onClick = {
                     viewModel.onEvent(
-                        MainScreenEvents.ChangeText(
-                            text = MainScreenStates(
-                                toggleSearch = !state.toggleSearch,
-                                search = state.search
-                            )
+                        MainScreenEvents.ChangeToggleSearch(
+                            !state.toggleSearch
                         )
                     )
                 }) {
@@ -145,12 +197,12 @@ fun SearchBox(
     states: MainScreenStates,
     onEvent: (MainScreenEvents) -> Unit
 ) {
-   val focus = LocalFocusManager.current
+    val focus = LocalFocusManager.current
     val focusRequester = remember {
         FocusRequester()
     }
 
-    LaunchedEffect(key1 = states.toggleSearch){
+    LaunchedEffect(key1 = states.toggleSearch) {
         focusRequester.requestFocus()
     }
 
@@ -165,13 +217,10 @@ fun SearchBox(
             value = states.search ?: "",
             onValueChange = {
                 onEvent(
-                    MainScreenEvents.ChangeText(
-                        MainScreenStates(
-                            search = it,
-                            toggleSearch = states.toggleSearch,
-                            selectedTabIndex = states.selectedTabIndex
+                    MainScreenEvents.ChangeSearch(
+                        search = it,
+
                         )
-                    )
                 )
             },
             modifier = Modifier
@@ -196,14 +245,11 @@ fun SearchBox(
                 IconButton(onClick = {
                     focusRequester.freeFocus()
                     onEvent(
-                        MainScreenEvents.ChangeText(
-                            MainScreenStates(
-                                toggleSearch = !states.toggleSearch,
-                                search = null,
-                                selectedTabIndex = states.selectedTabIndex
-                            )
+                        MainScreenEvents.ChangeToggleSearch(
+                            toggleSearch = !states.toggleSearch
                         )
                     )
+                    onEvent(MainScreenEvents.ChangeSearch(search = null))
                 }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
@@ -215,15 +261,7 @@ fun SearchBox(
             },
             trailingIcon = {
                 IconButton(onClick = {
-                    onEvent(
-                        MainScreenEvents.ChangeText(
-                            MainScreenStates(
-                                toggleSearch = states.toggleSearch,
-                                search = null,
-                                selectedTabIndex = states.selectedTabIndex
-                            )
-                        )
-                    )
+                    onEvent(MainScreenEvents.ChangeSearch(search = null))
                 }) {
                     Icon(
                         imageVector = Icons.Default.Close,
@@ -263,28 +301,61 @@ fun BodyChat(
         ) {
             viewModel.onEvent(it)
         }
-        ChatScreen()
+        ChatScreen(state = state) {
+            viewModel.onEvent(it)
+        }
     }
 }
 
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun ChatScreen(){
-    LazyColumn(){
+fun ChatScreen(
+    state: MainScreenStates,
+    onEvent: (MainScreenEvents) -> Unit
+) {
+    val list = state.list
+    val pagerStates = rememberPagerState()
+
+    LaunchedEffect(key1 = state.selectedTabIndex) {
+        pagerStates.animateScrollToPage(state.selectedTabIndex)
+    }
+    LaunchedEffect(key1 = pagerStates.currentPage) {
+        onEvent(MainScreenEvents.ChangeSelectedTabIndex(pagerStates.currentPage))
+    }
+
+    HorizontalPager(
+        pageCount = state.list.size,
+        state = pagerStates,
+        modifier = Modifier.fillMaxSize()
+    ) { page ->
+        when (page) {
+            0 -> {
+                Chats()
+            }
+            1 -> {
+
+            }
+        }
     }
 }
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabScreen(
     state: MainScreenStates,
     onEvent: (MainScreenEvents) -> Unit
 ) {
-    val list = listOf("Chat", "Contactos")
+
     TabRow(
-        selectedTabIndex = 1,
+        selectedTabIndex = state.selectedTabIndex,
         modifier = Modifier.height(60.dp),
         backgroundColor = MaterialTheme.colors.background,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
-                modifier = Modifier.tabIndicatorOffset(tabPositions[state.selectedTabIndex]),
+                modifier = Modifier.tabIndicatorOffset(
+                    tabPositions[state.selectedTabIndex]
+                ),
                 height = 3.dp,
                 color = MaterialTheme.colors.onSecondary
             )
@@ -295,18 +366,11 @@ fun TabScreen(
             )
         }
     ) {
-        list.forEachIndexed { index, list ->
+        state.list.forEachIndexed { index, list ->
             Tab(
                 selected = state.selectedTabIndex == index, onClick = {
-                    onEvent(
-                        MainScreenEvents.ChangeText(
-                            MainScreenStates(
-                                search = state.search,
-                                toggleSearch = state.toggleSearch,
-                                selectedTabIndex = index
-                            )
-                        )
-                    )
+                    Log.d(TAG, state.selectedTabIndex.toString())
+                    onEvent(MainScreenEvents.ChangeSelectedTabIndex(index))
                 })
             {
                 Text(
@@ -317,4 +381,30 @@ fun TabScreen(
             }
         }
     }
+}
+
+@Composable
+fun Chats() {
+    LazyColumn() {
+        repeat(100) {
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp),
+                    backgroundColor = MaterialTheme.colors.secondary
+                ) {
+                    Text(
+                        text = "HOLA COMO ESTAS",
+                        color = Color.White
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ItemChat() {
+
 }

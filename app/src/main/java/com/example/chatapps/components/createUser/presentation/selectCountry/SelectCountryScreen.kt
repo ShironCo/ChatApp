@@ -30,6 +30,7 @@ fun SelectCountryApp(
     viewModel: CreateUserViewModel = hiltViewModel()
 ) {
     Scaffold(
+        modifier = Modifier.statusBarsPadding().navigationBarsPadding(),
         topBar = {
             SelectCountryTopBar {
                 viewModel.onEvent(CreateUserEvents.NavBack(navHostController))
